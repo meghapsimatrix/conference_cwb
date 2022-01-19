@@ -116,6 +116,7 @@ library(simhelpers)
   - Policy implication - re-evaluate the programs for high school teachers and identify ways to make it better or curtail use of program in high schools
   
 - HTZ test - miss the difference in effects across grade levels when it actually exists
+
   
 ---
 
@@ -139,9 +140,9 @@ To what extent does CWB improve upon the current standard test, the HTZ test, in
 
 # Simulation
 
-- Ran a large simulation 
+- Ran two simulations - presenting on Simulation 1
 
-- Compared CWB against the HTZ test
+- Compared CWB against the HTZ test in terms of Type 1 error rates and power
 
 - Results
   - CWB maintained Type 1 error rates adequately 
