@@ -1,6 +1,5 @@
 ---
-title: "Causal Inference and Meta-Analysis Research"
-subtitle: "Overview of My Work"
+title: "Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies"
 author: "Megha Joshi"
 date: "`r Sys.Date()`"
 output:
@@ -32,277 +31,17 @@ library(simhelpers)
 
 # About Me
 
-- PhD in Quantitative Methods at UT Austin - defended February, 2021
-  - Dissertation focused on examining methods to handle dependent effect sizes in meta-analysis
+- PhD in Quantitative Methods at UT Austin (2021)
 
 - Research interests
   - Causal inference 
   - Meta-analysis
-
   
----
+- Article based on my dissertation, which focused on examining methods to handle dependent effect sizes in meta-analysis
 
-# Today's Presentation
+  -  [Preprint](https://osf.io/preprints/metaarxiv/x6uhk/)
 
-- One applied project - program evaluation
-  - College preparatory math program
-  - Propensity score analysis
-  - Large scale data analysis
-  
-- Time for questions
-
-
-- One methodological project - meta-analysis methods
-  - My dissertation - evaluating methods to handle dependent effect sizes in meta-analysis
-  - Brief overview and key takeaways
-
-- Time for questions
-
-
----
-
-class: inverse, middle, center, cobBack
-
-# Evaluating the Transition to College Mathematics Course in Texas High Schools
-
-### Pustejovsky and Joshi (2020)
-
-## Applied Research
-
----
-
-# Rationale 
-
-- Post-secondary education - gateway for economic and social mobility
-
-- Over half of students entering community colleges - not prepared to take college-level math courses (Bailey, Jeong, and Cho, 2010)
-
-- Not ready - less likely to succeed in college
-
-- Developmental courses - barrier to successful college completion 
-
-- An alternative - take preparatory coursework in high school
-
-- Texas House Bill 5 (2013) required school districts to partner with community colleges to provide __math__ preparatory programs to high school seniors.
-
-
----
-
-# Treatment Program
-
-- __Transition to College Mathematics Course__ (TCMC) by the UT Austin Dana Center
-
-- Implemented in central Texas districts
-  - 18 schools in 9 districts in 2016-17
-  - High schools partnered with community colleges 
-  
-- The course
-  - Broad range of math skills required for different fields of study
-  - Novel material and instructional strategies
-  - Evidence based teaching approaches 
-  
-  
----
-
-# Enrollment in TCMC
-
-- Students were not randomized but were advised and chose to participate in TCMC or not
-
-- Enrollment in the course was up to the students and staff
-
-- Advising for enrollment differed across schools
-
-
-
-
----
-
-# Research Question 
-
-To what extent does participating in TCMC, relative to taking typical high school coursework, affect 
-
-- high school graduation, 
-- post-secondary enrollment, 
-- and progress in college-level mathematics 
-
-for $12^{th}$ grade students enrolled in TCMC?
-
-
-
----
-
-# Data Sources
-
-Texas PK-20/Workforce database, a statewide longitudinal database, provided by Education Research Center at UT Austin. Data from: 
-
-  - Texas Education Agency
-  - Texas Higher Education Coordinating Board
-  - State of Texas Assessments of Academic Readiness (STAAR)
-
----
-
-# Observational Study: Causal Inference 
-
-- RCTs - treatment and comparison groups similar on all confounding variables
-  - Treatment caused the effect
-
-- In observational studies, we do not have randomized groups
-
-- In this study, TCMC students - more likely to be economically disadvantaged, more likely to have done poorly in prior math courses
-
-- To make causal inference from observational data __what can we do?__ 
-  
----
-
-# Confounding Variables
-
-- Demographics - gender, race/ethnicity, free or reduced lunch enrollment
-
-- Demographic history - back to 2007-08
-
-- Program enrollment status and history - gifted, special education
-
-- Math course-taking and passing history - going back to 8th grade
-
-- Math achievement - Algebra I end of course STAAR exam scores 
-
-
----
-
-# Comparison Groups
-
-- Contemporary cohort 
-
-  - Enrolled as seniors in 2016-17 year but who did not take TCMC
-  
-  - Covariate and outcome measures at same time
-  
-  - Groups may be substantively different at baseline - comparison group would have elected not to take TCMC
-  
-- Previous-year cohort
-
-  - Enrolled as seniors in 2015-16 year
-  
-  - Covariate and outcome measures at different points in time
-  
-  - Groups may be more similar at baseline - comparison group would have elected to take TCMC had it been available 
-
----
-
-# Analytic Approach
-
-- Used propensity score analysis  (Rosenbaum and Rubin, 1983)
-  - A way to create comparison group that is similar to the treatment on covariates
-  - Balance treatment and comparison groups
-  
-- Used generalized boosted modeling to estimate propensity scores (McCafferey, Ridgeway and Morral, 2004)
-  - Helps detect interactions and non-linearity - balance
-  
-- Outcome model included covariate by treatment interactions
-
-- Estimated school-specific treatment effects and then aggregated the results
-  - Compare students within schools
-  - Emulate block-randomized designs
-
----
-
-# Assumption
-
-__Strong ignorability__ (Rosenbaum and Rubin, 1983)
-
-- First part - requires that all confounders are accounted for
-
-  - Included - demographics and past math course-taking history
-  
-  - Missing - pre-treatment college readiness because of lack of data or other characteristics like college aspirations
-
-- Second part - required that people in treatment group have corresponding people in the comparison group with similar characteristics
- - Trimmed the sample
-
----
-
-# Balance: Contemporaneous
-
-```{r cont-balance, echo=FALSE, out.width = "92%"}
-knitr::include_graphics("results/cont_love_plot_cut.png")
-```
-
-
----
-
-# Balance: Previous
-
-```{r prev-balance, echo=FALSE, out.width = "92%"}
-knitr::include_graphics("results/prev_love_plot_cut.png")
-```
-
----
-
-# Results
-
-```{r, echo = FALSE, dpi = 500, fig.show='hold'}
-knitr::include_graphics("results/impact_estimates.png", dpi = 500)
-```
-
-
----
-
-# Policy Implications
-
-- TCMC was designed to prep students who are not ready to take college-level courses
-
-- Positive effect on high school graduation
-
-- However, __unintended null or negative effects__ on college math-course enrollment and passage
-  - Course may not be working as intended
-  - Not helping students succeed in math courses in college
-  
-- Negative effect on overall college enrollment
-  - Driven by negative effect on four-year college enrollment rates
-  - Examine incentive structure to enroll in community colleges
-  
-
----
-
-# Limitations
-
-- We analyzed the first year - first round of implementation
-
-  - Treatment may not be implemented as intended yet 
-  
-  - Teachers may still be figuring out curriculum and may not have been trained well yet
-
-- We could not account for pre-treatment college readiness or other unobservable characteristics like college aspirations
-
-  
----
-
-# Future Directions
-
-- Sensitivity analysis for unmeasured confounders
-
-- Analyze what about the treatment is resulting in negative and null effects
-  - Is the course being implemented as intended?
-
-- Analysis of longer term implementation
-
-
-
----
-
-class: inverse, middle, center, cobBack
-
-# Questions?
-
----
-
-class: inverse, middle, center, cobBack
-
-# Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies
-
-### Joshi, Pustejovsky, and Beretvas (2021)
-
-## Methodological Research
+  - Co-authors: [James E. Pustejovsky](https://www.jepusto.com/) and [S. Natasha Beretvas](https://education.utexas.edu/faculty/susan_beretvas)
 
 ---
 
@@ -418,7 +157,7 @@ To what extent does CWB improve upon the current standard test, the HTZ test, in
 
 # Results: Relative Power
 
-![](plots/power_05.png)
+![](plots/power_05_scatter.png)
 
 
 ---
@@ -456,15 +195,13 @@ class: inverse
 
 # References
 
-Bailey, T., Jeong, D. W., & Cho, S. W. (2010). Referral, enrollment, and completion in developmental education sequences in community colleges. Economics of Education Review, 29(2), 255-270.
-
-Calcagno, J. C., & Long, B. T. (2008).The Impact of Postsecondary Remediation Using a Regression Discontinuity Approach: Addressing Endogenous Sorting and Noncompliance. doi:10.3386/w14194
-
 Cameron, A. C., Gelbach, J. B., & Miller, D. L. (2008). Bootstrap-Based Improvements for Inference with Clustered Errors. The Review of Economics and Statistics, 47.
 
-Fisher, Z., Tipton, E., & Zhipeng, H. (2017). Robumeta: Robust variance meta- regression [R package version 2.0]. R package version 2.0. 
+Fisher, Z., Tipton, E., & Zhipeng, H. (2017).robumeta: Robust variance meta- regression [R package version 2.0]. R package version 2.0. 
 
 Garrett, R., Citkowicz, M., & Williams, R. (2019). How responsive is a teacher’s classroom practice to intervention? A meta-analysis of randomized field studies. Review of research in education, 43(1), 106-137.
+
+Hedges, L. V., Tipton, E., & Johnson, M. C. (2010). Robust variance estimation in meta-regression with dependent effect size estimates. Research Synthesis Methods, 1(1), 39–65. 
 
 
 ---
@@ -472,10 +209,6 @@ Garrett, R., Citkowicz, M., & Williams, R. (2019). How responsive is a teacher�
 class: inverse
 
 # References
-
-Hedges, L. V., Tipton, E., & Johnson, M. C. (2010). Robust variance estimation in meta-regression with dependent effect size estimates. Research Synthesis Methods, 1(1), 39–65. 
-
-Ho, D. E., Imai, K., King, G., & Stuart, E. A. (2007). Matching as nonparametric preprocessing for reducing model dependence in parametric causal inference. Political analysis, 15(3), 199-236.
 
 McCaffrey, D. F., Bell, R. M., & Botts, C. H. (2001, August). Generalizations of biased reduced linearization. In Proceedings of the Annual Meeting of the American Statistical Association (No. 1994, p. 673).
 
@@ -490,27 +223,12 @@ class: inverse
 
 # References
 
-McCaffrey, D. F., Ridgeway, G., & Morral, A. R. (2004). Propensity score estimation with boosted regression for evaluating causal effects in observational studies. Psychological methods, 9(4), 403.
-
-Pustejovsky, J. E. (2020). Clubsandwich: Cluster-robust (sandwich) variance estimators with small-sample corrections [R package version 0.4.2]. R package version 0.4.2. 
+Pustejovsky, J. E. (2020). clubSandwich: Cluster-robust (sandwich) variance estimators with small-sample corrections [R package version 0.4.2]. R package version 0.4.2. 
 
 Pustejovsky, J. E., & Tipton, E. (2021). Meta-analysis with Robust Variance Estimation: Expanding the range of working models. Prevention Science, 1-14.
-
-Rosenbaum, P. R., & Rubin, D. B. (1983). The central role of the propensity score in observational studies for causal effects. Biometrika, 70(1), 41-55.
-
-Scott-Clayton, J., & Rodriguez, O. (2015). Development, discouragement, or diversion? Newevidence on the effects of college remediation policy.Education Finance and Policy,10(1), 4–45. doi:10.1162/EDFP_a_00150
-
----
-
-class: inverse
-
-# References
 
 Tipton, E., & Pustejovsky, J. E. (2015). Small-Sample Adjustments for Tests of Moderators and Model Fit Using Robust Variance Estimation in Meta-Regression. Journal of Educational and Behavioral Statistics, 40 (6), 604–634. 
 
 Tipton, E. (2015). Small sample adjustments for robust variance estimation with meta-regression. Psychological Methods, 20(3), 375–393. 
-
-
-
 
 

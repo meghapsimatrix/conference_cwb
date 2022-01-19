@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Megha Joshi" />
+    <meta name="date" content="2022-01-19" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies
+### Megha Joshi
+### 2022-01-19
+
+---
+
+
+
+
+
+
+# About Me
+
+- PhD in Quantitative Methods at UT Austin (2021)
+
+- Research interests
+  - Causal inference 
+  - Meta-analysis
+  
+- Article based on my dissertation, which focused on examining methods to handle dependent effect sizes in meta-analysis
+
+  -  [Preprint](https://osf.io/preprints/metaarxiv/x6uhk/)
+
+  - Co-authors: [James E. Pustejovsky](https://www.jepusto.com/) and [S. Natasha Beretvas](https://education.utexas.edu/faculty/susan_beretvas)
+
+---
+
+
+# Meta Analysis
+
+- Set of statistical techniques to synthesize results from multiple studies on the same topic
+
+- Goals of meta-analysis
+  - Summarize effect size estimates across studies
+  - Characterize variability in effect sizes
+  - Explain the variability in effect sizes
+
+
+---
+
+# Dependence 
+
+- Meta-analytic techniques - assumption that effect sizes are independent 
+
+- However, common for each primary study to yield more than one effect size or studies to be nested in some way - creating dependence 
+  
+- Example: Garrett, Citkowicz, and Williams (2019)
+
+  - Meta-analysis of randomized studies examining the effect of professional learning interventions for teachers on classroom practice
+  
+  - Included studies with multiple outcomes measured on the same sample 
+
+---
+
+# Handling Dependence
+
+- Ignore dependence - incorrect standard errors, incorrect inference from hypothesis tests
+
+- Robust variance estimation (RVE) (Hedges, Tipton, and Johnson, 2010)
+
+  - Only works well when number of studies is large 
+  
+  - Meta-analysis in social science research typically have smaller number of studies ~ 40
+  
+  - Small number of studies - Type 1 error inflation 
+  
+  - Meta-analysts can conclude some effect is present when it is actually not
+  
+  - Example, can conclude teacher professional learning programs are effective for teachers who are older when in reality that effect does not exist 
+
+---
+
+# Small Sample Corrections
+
+- Tipton (2015) and Tipton and Pustejovsky (2015)
+
+- Both recommended a method - HTZ test - CR2 correction method and using the Satterthwaite degrees of freedom 
+
+- The recommended method controls Type 1 error rates adequately 
+
+  - But, really low Type 1 error rates especially for __multiple-contrast hypothesis tests__ (Tipton and Pustejovsky, 2015)
+  
+  - Indicating that the test may have low power
+
+---
+
+# Multiple Contrast Hypothesis Tests
+
+- Are effects same across different levels of a moderator variable?
+  
+- Garrett, Citkowicz, and Williams (2019)
+ - A multiple-contrast hypothesis __could__ test whether effects of teacher professional learning programs on classroom practice differ for teachers teaching in different grade levels: K-5, 6-8, and 9-12?
+
+- If effects differ
+  - For example, effects are positive for teachers in elementary and middle schools but null or negative for teachers in high schools
+  - Policy implication - re-evaluate the programs for high school teachers and identify ways to make it better or curtail use of program in high schools
+  
+- HTZ test - miss the difference in effects across grade levels when it actually exists
+  
+---
+
+# Cluster Wild Bootstrapping (CWB)
+
+- Alternative method - examined in the econometrics literature - not in meta-analytic framework
+
+- Bootstrapping - estimate unknown quantities by re-sampling from original data many times (Boos et al., 2013)
+  
+- CWB - re-sampling residuals by multiplying them by cluster-level random weights
+
+
+---
+
+# Research Question
+
+To what extent does CWB improve upon the current standard test, the HTZ test, in terms of Type I error rates and power? 
+
+
+---
+
+# Simulation
+
+- Ran a large simulation 
+
+- Compared CWB against the HTZ test
+
+- Results
+  - CWB maintained Type 1 error rates adequately 
+  - And, provided huge gains in power over the standard method, the HTZ test
+
+---
+
+# Results: Type I Error
+
+![](plots/type1_05.png)
+
+---
+
+# Results: Relative Power
+
+![](plots/power_05_scatter.png)
+
+
+---
+
+# Conclusion
+
+- Dependent effect sizes - common
+
+- Ignore them - incorrect standard errors and inferences
+
+- Use RVE - Type 1 error inflation - false discovery rate high
+
+- Use small sample correction HTZ test - may miss effects that are present
+
+- Use CWB - balances Type 1 error rates and also provides more power than existing corrections
+
+- R package [wildmeta](https://meghapsimatrix.github.io/wildmeta/)
+
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Questions?
+
+---
+
+class: inverse, middle, center, cobBack
+
+# THANK YOU!
+
+---
+
+class: inverse
+
+# References
+
+Cameron, A. C., Gelbach, J. B., &amp; Miller, D. L. (2008). Bootstrap-Based Improvements for Inference with Clustered Errors. The Review of Economics and Statistics, 47.
+
+Fisher, Z., Tipton, E., &amp; Zhipeng, H. (2017).robumeta: Robust variance meta- regression [R package version 2.0]. R package version 2.0. 
+
+Garrett, R., Citkowicz, M., &amp; Williams, R. (2019). How responsive is a teacher’s classroom practice to intervention? A meta-analysis of randomized field studies. Review of research in education, 43(1), 106-137.
+
+Hedges, L. V., Tipton, E., &amp; Johnson, M. C. (2010). Robust variance estimation in meta-regression with dependent effect size estimates. Research Synthesis Methods, 1(1), 39–65. 
+
+
+---
+
+class: inverse
+
+# References
+
+McCaffrey, D. F., Bell, R. M., &amp; Botts, C. H. (2001, August). Generalizations of biased reduced linearization. In Proceedings of the Annual Meeting of the American Statistical Association (No. 1994, p. 673).
+
+MacKinnon, J. G., &amp; Webb, M. D. (2017). Wild Bootstrap Inference for Wildly Dif- ferent Cluster Sizes. Journal of Applied Econometrics, 32(2), 233–254. 
+
+MacKinnon, J. G., &amp; White, H. (1985). Some heteroskedasticity-consistent covariance matrix estimators with improved finite sample properties. Journal of econometrics, 29(3), 305-325.
+
+
+---
+
+class: inverse
+
+# References
+
+Pustejovsky, J. E. (2020). clubSandwich: Cluster-robust (sandwich) variance estimators with small-sample corrections [R package version 0.4.2]. R package version 0.4.2. 
+
+Pustejovsky, J. E., &amp; Tipton, E. (2021). Meta-analysis with Robust Variance Estimation: Expanding the range of working models. Prevention Science, 1-14.
+
+Tipton, E., &amp; Pustejovsky, J. E. (2015). Small-Sample Adjustments for Tests of Moderators and Model Fit Using Robust Variance Estimation in Meta-Regression. Journal of Educational and Behavioral Statistics, 40 (6), 604–634. 
+
+Tipton, E. (2015). Small sample adjustments for robust variance estimation with meta-regression. Psychological Methods, 20(3), 375–393. 
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
