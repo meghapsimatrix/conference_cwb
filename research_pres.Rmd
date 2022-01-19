@@ -1,0 +1,516 @@
+---
+title: "Causal Inference and Meta-Analysis Research"
+subtitle: "Overview of My Work"
+author: "Megha Joshi"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#3C989E",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(simhelpers)
+```
+
+# About Me
+
+- PhD in Quantitative Methods at UT Austin - defended February, 2021
+  - Dissertation focused on examining methods to handle dependent effect sizes in meta-analysis
+
+- Research interests
+  - Causal inference 
+  - Meta-analysis
+
+  
+---
+
+# Today's Presentation
+
+- One applied project - program evaluation
+  - College preparatory math program
+  - Propensity score analysis
+  - Large scale data analysis
+  
+- Time for questions
+
+
+- One methodological project - meta-analysis methods
+  - My dissertation - evaluating methods to handle dependent effect sizes in meta-analysis
+  - Brief overview and key takeaways
+
+- Time for questions
+
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Evaluating the Transition to College Mathematics Course in Texas High Schools
+
+### Pustejovsky and Joshi (2020)
+
+## Applied Research
+
+---
+
+# Rationale 
+
+- Post-secondary education - gateway for economic and social mobility
+
+- Over half of students entering community colleges - not prepared to take college-level math courses (Bailey, Jeong, and Cho, 2010)
+
+- Not ready - less likely to succeed in college
+
+- Developmental courses - barrier to successful college completion 
+
+- An alternative - take preparatory coursework in high school
+
+- Texas House Bill 5 (2013) required school districts to partner with community colleges to provide __math__ preparatory programs to high school seniors.
+
+
+---
+
+# Treatment Program
+
+- __Transition to College Mathematics Course__ (TCMC) by the UT Austin Dana Center
+
+- Implemented in central Texas districts
+  - 18 schools in 9 districts in 2016-17
+  - High schools partnered with community colleges 
+  
+- The course
+  - Broad range of math skills required for different fields of study
+  - Novel material and instructional strategies
+  - Evidence based teaching approaches 
+  
+  
+---
+
+# Enrollment in TCMC
+
+- Students were not randomized but were advised and chose to participate in TCMC or not
+
+- Enrollment in the course was up to the students and staff
+
+- Advising for enrollment differed across schools
+
+
+
+
+---
+
+# Research Question 
+
+To what extent does participating in TCMC, relative to taking typical high school coursework, affect 
+
+- high school graduation, 
+- post-secondary enrollment, 
+- and progress in college-level mathematics 
+
+for $12^{th}$ grade students enrolled in TCMC?
+
+
+
+---
+
+# Data Sources
+
+Texas PK-20/Workforce database, a statewide longitudinal database, provided by Education Research Center at UT Austin. Data from: 
+
+  - Texas Education Agency
+  - Texas Higher Education Coordinating Board
+  - State of Texas Assessments of Academic Readiness (STAAR)
+
+---
+
+# Observational Study: Causal Inference 
+
+- RCTs - treatment and comparison groups similar on all confounding variables
+  - Treatment caused the effect
+
+- In observational studies, we do not have randomized groups
+
+- In this study, TCMC students - more likely to be economically disadvantaged, more likely to have done poorly in prior math courses
+
+- To make causal inference from observational data __what can we do?__ 
+  
+---
+
+# Confounding Variables
+
+- Demographics - gender, race/ethnicity, free or reduced lunch enrollment
+
+- Demographic history - back to 2007-08
+
+- Program enrollment status and history - gifted, special education
+
+- Math course-taking and passing history - going back to 8th grade
+
+- Math achievement - Algebra I end of course STAAR exam scores 
+
+
+---
+
+# Comparison Groups
+
+- Contemporary cohort 
+
+  - Enrolled as seniors in 2016-17 year but who did not take TCMC
+  
+  - Covariate and outcome measures at same time
+  
+  - Groups may be substantively different at baseline - comparison group would have elected not to take TCMC
+  
+- Previous-year cohort
+
+  - Enrolled as seniors in 2015-16 year
+  
+  - Covariate and outcome measures at different points in time
+  
+  - Groups may be more similar at baseline - comparison group would have elected to take TCMC had it been available 
+
+---
+
+# Analytic Approach
+
+- Used propensity score analysis  (Rosenbaum and Rubin, 1983)
+  - A way to create comparison group that is similar to the treatment on covariates
+  - Balance treatment and comparison groups
+  
+- Used generalized boosted modeling to estimate propensity scores (McCafferey, Ridgeway and Morral, 2004)
+  - Helps detect interactions and non-linearity - balance
+  
+- Outcome model included covariate by treatment interactions
+
+- Estimated school-specific treatment effects and then aggregated the results
+  - Compare students within schools
+  - Emulate block-randomized designs
+
+---
+
+# Assumption
+
+__Strong ignorability__ (Rosenbaum and Rubin, 1983)
+
+- First part - requires that all confounders are accounted for
+
+  - Included - demographics and past math course-taking history
+  
+  - Missing - pre-treatment college readiness because of lack of data or other characteristics like college aspirations
+
+- Second part - required that people in treatment group have corresponding people in the comparison group with similar characteristics
+ - Trimmed the sample
+
+---
+
+# Balance: Contemporaneous
+
+```{r cont-balance, echo=FALSE, out.width = "92%"}
+knitr::include_graphics("results/cont_love_plot_cut.png")
+```
+
+
+---
+
+# Balance: Previous
+
+```{r prev-balance, echo=FALSE, out.width = "92%"}
+knitr::include_graphics("results/prev_love_plot_cut.png")
+```
+
+---
+
+# Results
+
+```{r, echo = FALSE, dpi = 500, fig.show='hold'}
+knitr::include_graphics("results/impact_estimates.png", dpi = 500)
+```
+
+
+---
+
+# Policy Implications
+
+- TCMC was designed to prep students who are not ready to take college-level courses
+
+- Positive effect on high school graduation
+
+- However, __unintended null or negative effects__ on college math-course enrollment and passage
+  - Course may not be working as intended
+  - Not helping students succeed in math courses in college
+  
+- Negative effect on overall college enrollment
+  - Driven by negative effect on four-year college enrollment rates
+  - Examine incentive structure to enroll in community colleges
+  
+
+---
+
+# Limitations
+
+- We analyzed the first year - first round of implementation
+
+  - Treatment may not be implemented as intended yet 
+  
+  - Teachers may still be figuring out curriculum and may not have been trained well yet
+
+- We could not account for pre-treatment college readiness or other unobservable characteristics like college aspirations
+
+  
+---
+
+# Future Directions
+
+- Sensitivity analysis for unmeasured confounders
+
+- Analyze what about the treatment is resulting in negative and null effects
+  - Is the course being implemented as intended?
+
+- Analysis of longer term implementation
+
+
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Questions?
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies
+
+### Joshi, Pustejovsky, and Beretvas (2021)
+
+## Methodological Research
+
+---
+
+
+# Meta Analysis
+
+- Set of statistical techniques to synthesize results from multiple studies on the same topic
+
+- Goals of meta-analysis
+  - Summarize effect size estimates across studies
+  - Characterize variability in effect sizes
+  - Explain the variability in effect sizes
+
+
+---
+
+# Dependence 
+
+- Meta-analytic techniques - assumption that effect sizes are independent 
+
+- However, common for each primary study to yield more than one effect size or studies to be nested in some way - creating dependence 
+  
+- Example: Garrett, Citkowicz, and Williams (2019)
+
+  - Meta-analysis of randomized studies examining the effect of professional learning interventions for teachers on classroom practice
+  
+  - Included studies with multiple outcomes measured on the same sample 
+
+---
+
+# Handling Dependence
+
+- Ignore dependence - incorrect standard errors, incorrect inference from hypothesis tests
+
+- Robust variance estimation (RVE) (Hedges, Tipton, and Johnson, 2010)
+
+  - Only works well when number of studies is large 
+  
+  - Meta-analysis in social science research typically have smaller number of studies ~ 40
+  
+  - Small number of studies - Type 1 error inflation 
+  
+  - Meta-analysts can conclude some effect is present when it is actually not
+  
+  - Example, can conclude teacher professional learning programs are effective for teachers who are older when in reality that effect does not exist 
+
+---
+
+# Small Sample Corrections
+
+- Tipton (2015) and Tipton and Pustejovsky (2015)
+
+- Both recommended a method - HTZ test - CR2 correction method and using the Satterthwaite degrees of freedom 
+
+- The recommended method controls Type 1 error rates adequately 
+
+  - But, really low Type 1 error rates especially for __multiple-contrast hypothesis tests__ (Tipton and Pustejovsky, 2015)
+  
+  - Indicating that the test may have low power
+
+---
+
+# Multiple Contrast Hypothesis Tests
+
+- Are effects same across different levels of a moderator variable?
+  
+- Garrett, Citkowicz, and Williams (2019)
+ - A multiple-contrast hypothesis __could__ test whether effects of teacher professional learning programs on classroom practice differ for teachers teaching in different grade levels: K-5, 6-8, and 9-12?
+
+- If effects differ
+  - For example, effects are positive for teachers in elementary and middle schools but null or negative for teachers in high schools
+  - Policy implication - re-evaluate the programs for high school teachers and identify ways to make it better or curtail use of program in high schools
+  
+- HTZ test - miss the difference in effects across grade levels when it actually exists
+  
+---
+
+# Cluster Wild Bootstrapping (CWB)
+
+- Alternative method - examined in the econometrics literature - not in meta-analytic framework
+
+- Bootstrapping - estimate unknown quantities by re-sampling from original data many times (Boos et al., 2013)
+  
+- CWB - re-sampling residuals by multiplying them by cluster-level random weights
+
+
+---
+
+# Research Question
+
+To what extent does CWB improve upon the current standard test, the HTZ test, in terms of Type I error rates and power? 
+
+
+---
+
+# Simulation
+
+- Ran a large simulation 
+
+- Compared CWB against the HTZ test
+
+- Results
+  - CWB maintained Type 1 error rates adequately 
+  - And, provided huge gains in power over the standard method, the HTZ test
+
+---
+
+# Results: Type I Error
+
+![](plots/type1_05.png)
+
+---
+
+# Results: Relative Power
+
+![](plots/power_05.png)
+
+
+---
+
+# Conclusion
+
+- Dependent effect sizes - common
+
+- Ignore them - incorrect standard errors and inferences
+
+- Use RVE - Type 1 error inflation - false discovery rate high
+
+- Use small sample correction HTZ test - may miss effects that are present
+
+- Use CWB - balances Type 1 error rates and also provides more power than existing corrections
+
+- R package [wildmeta](https://meghapsimatrix.github.io/wildmeta/)
+
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Questions?
+
+---
+
+class: inverse, middle, center, cobBack
+
+# THANK YOU!
+
+---
+
+class: inverse
+
+# References
+
+Bailey, T., Jeong, D. W., & Cho, S. W. (2010). Referral, enrollment, and completion in developmental education sequences in community colleges. Economics of Education Review, 29(2), 255-270.
+
+Calcagno, J. C., & Long, B. T. (2008).The Impact of Postsecondary Remediation Using a Regression Discontinuity Approach: Addressing Endogenous Sorting and Noncompliance. doi:10.3386/w14194
+
+Cameron, A. C., Gelbach, J. B., & Miller, D. L. (2008). Bootstrap-Based Improvements for Inference with Clustered Errors. The Review of Economics and Statistics, 47.
+
+Fisher, Z., Tipton, E., & Zhipeng, H. (2017). Robumeta: Robust variance meta- regression [R package version 2.0]. R package version 2.0. 
+
+Garrett, R., Citkowicz, M., & Williams, R. (2019). How responsive is a teacher’s classroom practice to intervention? A meta-analysis of randomized field studies. Review of research in education, 43(1), 106-137.
+
+
+---
+
+class: inverse
+
+# References
+
+Hedges, L. V., Tipton, E., & Johnson, M. C. (2010). Robust variance estimation in meta-regression with dependent effect size estimates. Research Synthesis Methods, 1(1), 39–65. 
+
+Ho, D. E., Imai, K., King, G., & Stuart, E. A. (2007). Matching as nonparametric preprocessing for reducing model dependence in parametric causal inference. Political analysis, 15(3), 199-236.
+
+McCaffrey, D. F., Bell, R. M., & Botts, C. H. (2001, August). Generalizations of biased reduced linearization. In Proceedings of the Annual Meeting of the American Statistical Association (No. 1994, p. 673).
+
+MacKinnon, J. G., & Webb, M. D. (2017). Wild Bootstrap Inference for Wildly Dif- ferent Cluster Sizes. Journal of Applied Econometrics, 32(2), 233–254. 
+
+MacKinnon, J. G., & White, H. (1985). Some heteroskedasticity-consistent covariance matrix estimators with improved finite sample properties. Journal of econometrics, 29(3), 305-325.
+
+
+---
+
+class: inverse
+
+# References
+
+McCaffrey, D. F., Ridgeway, G., & Morral, A. R. (2004). Propensity score estimation with boosted regression for evaluating causal effects in observational studies. Psychological methods, 9(4), 403.
+
+Pustejovsky, J. E. (2020). Clubsandwich: Cluster-robust (sandwich) variance estimators with small-sample corrections [R package version 0.4.2]. R package version 0.4.2. 
+
+Pustejovsky, J. E., & Tipton, E. (2021). Meta-analysis with Robust Variance Estimation: Expanding the range of working models. Prevention Science, 1-14.
+
+Rosenbaum, P. R., & Rubin, D. B. (1983). The central role of the propensity score in observational studies for causal effects. Biometrika, 70(1), 41-55.
+
+Scott-Clayton, J., & Rodriguez, O. (2015). Development, discouragement, or diversion? Newevidence on the effects of college remediation policy.Education Finance and Policy,10(1), 4–45. doi:10.1162/EDFP_a_00150
+
+---
+
+class: inverse
+
+# References
+
+Tipton, E., & Pustejovsky, J. E. (2015). Small-Sample Adjustments for Tests of Moderators and Model Fit Using Robust Variance Estimation in Meta-Regression. Journal of Educational and Behavioral Statistics, 40 (6), 604–634. 
+
+Tipton, E. (2015). Small sample adjustments for robust variance estimation with meta-regression. Psychological Methods, 20(3), 375–393. 
+
+
+
+
+
