@@ -4,7 +4,7 @@
     <title>Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies</title>
     <meta charset="utf-8" />
     <meta name="author" content="Megha Joshi" />
-    <meta name="date" content="2022-01-19" />
+    <meta name="date" content="2022-01-24" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 
 # Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies
 ### Megha Joshi
-### 2022-01-19
+### 2022-01-24
 
 ---
 
@@ -45,18 +45,19 @@ class: center, middle, inverse, title-slide
 - Set of statistical techniques to synthesize results from multiple studies on the same topic
 
 - Goals of meta-analysis
-  - Summarize effect size estimates across studies
-  - Characterize variability in effect sizes
-  - Explain the variability in effect sizes
+  - Summarize effect size estimates across studies (inverse variance weighting)
+  - Characterize variability in effect sizes ($\tau^2$)
+  - Explain the variability in effect sizes (moderator analyses)
 
 
 ---
 
 # Dependence 
 
-- Meta-analytic techniques - assumption that effect sizes are independent 
+- Typical meta-analytic techniques (like meta-regression) involves the assumption that effect sizes are independent 
 
-- However, common for each primary study to yield more than one effect size or studies to be nested in some way - creating dependence 
+
+- However, common for each primary study to yield more than one effect size or studies to be nested in some way creating dependence 
   
 - Example: Garrett, Citkowicz, and Williams (2019)
 
@@ -70,13 +71,17 @@ class: center, middle, inverse, title-slide
 
 - Ignore dependence - incorrect standard errors, incorrect inference from hypothesis tests
 
-- Robust variance estimation (RVE) (Hedges, Tipton, and Johnson, 2010)
+- Standard multivariate methods - require info on covariance between effect sizes - primary studies don't report
+
+- Cluster robust variance estimation (CR0-type CRVE) (Hedges, Tipton, and Johnson, 2010)
+
+  - Rough approximate assumptions about dependence structure - sandwich estimators
 
   - Only works well when number of studies is large 
   
   - Meta-analysis in social science research typically have smaller number of studies ~ 40
   
-  - Small number of studies - Type 1 error inflation 
+  - Small number of studies - CRVE - Type 1 error inflation 
   
   - Meta-analysts can conclude some effect is present when it is actually not
   
@@ -88,7 +93,7 @@ class: center, middle, inverse, title-slide
 
 - Tipton (2015) and Tipton and Pustejovsky (2015)
 
-- Both recommended a method - HTZ test - CR2 correction method and using the Satterthwaite degrees of freedom 
+- Both recommended a method - HTZ test - CR2 correction method and using the Satterthwaite degrees of freedom (both CR2 and Satterthwaite df account for leverage and imbalance in covariates)
 
 - The recommended method controls Type 1 error rates adequately 
 
@@ -122,6 +127,25 @@ class: center, middle, inverse, title-slide
   
 - CWB - re-sampling residuals by multiplying them by cluster-level random weights
 
+---
+
+# CWB Algorithm
+
+1. Fit a null model and a full model on the original data
+
+2. Obtain residuals from the null model 
+
+3. Generate an auxiliary random variable that has mean of 0 and variance of 1 and multiply the residuals by the random variable (e.g., Rademacher weights) set to be constant within clusters (CWB)
+  - Can also multiply the residuals by CR2 matrices before multiplying by weights (CWB Adjusted)
+
+4.  Obtain new outcome scores by adding the transformed residuals to the predicted values from the null model fit on the original data
+
+5.  Re-estimate the full model with the new calculated outcome scores and obtain the test statistic
+
+6. Repeat steps 3-5 `\(R\)` times. Calculate p-value:
+
+`$$p = \frac{1}{R} \sum_{r = 1}^R I\left(F^{(r)} &gt; F\right)$$`
+
 
 ---
 
@@ -146,13 +170,17 @@ To what extent does CWB improve upon the current standard test, the HTZ test, in
 
 # Results: Type I Error
 
-![](plots/type1_05.png)
+
+&lt;img src="plots/type1_05.png" width="550" height="500" style="display: block; margin: auto;" /&gt;
+
 
 ---
 
 # Results: Relative Power
 
-![](plots/power_05_scatter.png)
+
+&lt;img src="plots/power_05_scatter.png" width="400" height="500" style="display: block; margin: auto;" /&gt;
+
 
 
 ---
