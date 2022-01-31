@@ -1,5 +1,6 @@
 ---
 title: "Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies"
+subtitle: "BITSS 10th Annual Meeting"
 author: "Megha Joshi"
 date: "`r Sys.Date()`"
 output:
@@ -52,7 +53,7 @@ library(simhelpers)
 
 - Goals of meta-analysis
   - Summarize effect size estimates across studies (inverse variance weighting)
-  - Characterize variability in effect sizes ($\tau^2$)
+  - Characterize variability in effect sizes 
   - Explain the variability in effect sizes (moderator analyses)
 
 
@@ -75,21 +76,32 @@ library(simhelpers)
 
 # Handling Dependence
 
-- Ignore dependence - incorrect standard errors, incorrect inference from hypothesis tests
+- Ignore dependence 
+  - Incorrect standard errors, incorrect inference from hypothesis tests
+  
+- Ad-hoc methods 
+  - Selecting one effect per study 
+  - Analysing subsets of data separately 
+  - Loss of information
 
-- Standard multivariate methods - require info on covariance between effect sizes - primary studies don't report
+- Standard multivariate methods - ideal 
+  - Require info on covariance between effect sizes 
+  - Primary studies often don't report 
+
+
+---
+
+# Robust Variance Estimation
 
 - Cluster robust variance estimation (CR0-type CRVE) (Hedges, Tipton, and Johnson, 2010)
 
   - Rough approximate assumptions about dependence structure - sandwich estimators
 
-  - Only works well when number of studies is large 
+  - Only works well when number of studies is large (> 40, Hedges Tipton, Johnson, 2010)
   
-  - Meta-analysis in social science research typically have smaller number of studies ~ 40
+  - Meta-analysis in social science research typically have smaller number of studies
   
-  - Small number of studies - CRVE - Type 1 error inflation 
-  
-  - Meta-analysts can conclude some effect is present when it is actually not
+  - Small number of studies - CRVE - Type 1 error inflation - meta-analysts can conclude some effect is present when it is actually not
   
   - Example, can conclude teacher professional learning programs are effective for teachers who are older when in reality that effect does not exist 
 
@@ -207,8 +219,16 @@ knitr::include_graphics("plots/power_05_scatter.png")
 
 - Use CWB - balances Type 1 error rates and also provides more power than existing corrections
 
-- R package [wildmeta](https://meghapsimatrix.github.io/wildmeta/)
 
+---
+
+```{r echo = FALSE, out.height = 500, out.width = 600, fig.align = "center"}
+knitr::include_graphics("wildmeta_hex.png")
+```
+
+<center>
+[https://meghapsimatrix.github.io/wildmeta/](https://meghapsimatrix.github.io/wildmeta/)
+</center>
 
 ---
 
