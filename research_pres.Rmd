@@ -169,6 +169,7 @@ $$p = \frac{1}{R} \sum_{r = 1}^R I\left(F^{(r)} > F\right)$$
 
 To what extent does CWB improve upon the current standard test, the HTZ test, in terms of Type I error rates and power? 
 
+![](https://media1.tenor.com/images/4e6f164ade4d978ce7a39c502d63dbab/tenor.gif?itemid=10627051)
 
 ---
 
