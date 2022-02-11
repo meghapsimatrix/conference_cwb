@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies</title>
+    <title>wildmeta: Cluster Wild Bootstrapping for Meta-Analysis</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Megha Joshi" />
+    <meta name="author" content="Megha Joshi &amp; James E. Pustejovsky" />
     <meta name="date" content="2022-02-10" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
@@ -12,9 +12,9 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Cluster Wild Bootstrapping to Handle Dependent Effect Sizes in Meta-Analysis with a Small Number of Studies
-## BITSS 10th Annual Meeting
-### Megha Joshi
+# wildmeta: Cluster Wild Bootstrapping for Meta-Analysis
+## ESMAR 2022
+### Megha Joshi &amp; James E. Pustejovsky
 ### 2022-02-10
 
 ---
@@ -25,31 +25,22 @@ class: center, middle, inverse, title-slide
 
 
 
-# Meta Analysis
+# wildmeta
 
-- Set of statistical techniques to synthesize results from multiple studies on the same topic
 
-- Goals of meta-analysis
-  - Summarize effect size estimates across studies
-  - Characterize variability in effect sizes 
-  - Explain the variability in effect sizes 
+&lt;img src="wildmeta_hex.png" width="650" height="500" style="display: block; margin: auto;" /&gt;
+
 
 
 ---
 
-# Dependence 
+# Dependence in Meta-Analysis
 
 - Typical meta-analytic techniques (like meta-regression) involves the assumption that effect sizes are independent 
 
 
 - However, common for each primary study to yield more than one effect size or studies to be nested in some way creating dependence 
   
-- Example: Garrett, Citkowicz, and Williams (2019)
-
-  - Meta-analysis of randomized studies examining the effect of professional learning interventions for teachers on classroom practice
-  
-  - Included studies with multiple outcomes measured on the same sample 
-
 ---
 
 # Handling Dependence
@@ -71,9 +62,7 @@ class: center, middle, inverse, title-slide
 
 # Robust Variance Estimation
 
-- Cluster robust variance estimation (CR0-type CRVE) (Hedges, Tipton, and Johnson, 2010)
-
-  - Rough approximate assumptions about dependence structure - sandwich estimators
+- Robust variance estimation (CR0-type CRVE) (Hedges, Tipton, and Johnson, 2010)
 
   - Only works well when number of studies is large (&gt; 40, Hedges Tipton, Johnson, 2010)
   
@@ -81,40 +70,15 @@ class: center, middle, inverse, title-slide
   
   - Small number of studies - CRVE - Type 1 error inflation - meta-analysts can conclude some effect is present when it is actually not
   
-  - Example, can conclude teacher professional learning programs are effective for teachers who are older when in reality that effect does not exist 
-
----
-
-# Types of Hypothesis Tests
-
-- Test of single coefficients
-  - For example: Does the effect of the professional learning treatment vary depending on the average teaching experience of the samples of teachers in primary studies?
-
-- Multiple-contrast hypothesis tests
-  -  Do effects differ across different levels of a moderator variable?
-  
-  - Garrett, Citkowicz, and Williams (2019) - A multiple-contrast hypothesis __could__ test whether effects of teacher professional learning programs on classroom practice differ for teachers teaching in different grade levels: K-5, 6-8, and 9-12?
-  
----
-
-# Implications of Multiple-Contrast Hypothesis Tests
-
-- If effects differ
-
-  - For example, effects are positive for teachers in elementary and middle schools but null or negative for teachers in high schools
-  
-  - Policy implication - re-evaluate the programs for high school teachers and identify ways to make it better or curtail use of program in high schools
-
-  
 ---
 
 # Small Sample Corrections
 
-- Tipton (2015) for tests of single coefficients
+- Tipton (2015) for tests of single coefficients (e.g., if treatment effect differs based on the average age of the samples)
 
-- Tipton and Pustejovsky (2015) for multiple-contrast hypothesis tests
+- Tipton and Pustejovsky (2015) for multiple-contrast hypothesis tests (e.g., whether treatment effect differ for )
 
-- Both recommended a method - HTZ test
+- Both recommended a method - HTZ test (`clubSandwich`)
   - CR2 correction method and using the Satterthwaite degrees of freedom for single coefficient tests
   - Extension of CR2 + Satterthwaite for multiple-contrast hypothesis tests
 
@@ -122,12 +86,9 @@ class: center, middle, inverse, title-slide
 
 - But, really low Type 1 error rates especially for __multiple-contrast hypothesis tests__ (Tipton and Pustejovsky, 2015)
   
-  - Indicating that the test may have low power 
-    - e.g., might miss the difference in the treatment effect across grade levels when the difference actually exists
+
 
 ---
-
-
 
 # Cluster Wild Bootstrapping (CWB)
 
@@ -159,39 +120,13 @@ class: center, middle, inverse, title-slide
 
 ---
 
-# Research Question
-
-To what extent does CWB improve upon the current standard test, the HTZ test, in terms of Type I error rates and power? 
-
-![](https://media1.tenor.com/images/4e6f164ade4d978ce7a39c502d63dbab/tenor.gif?itemid=10627051)
-
----
-
 # Simulation
 
-- Ran two simulations - presenting on Simulation 1
+- Ran two simulations 
 
 - Compared CWB against the HTZ test in terms of Type 1 error rates and power
 
-- Results
-  - CWB maintained Type 1 error rates adequately 
-  - And, provided huge gains in power over the standard method, the HTZ test
-
----
-
-# Results: Type I Error
-
-
-&lt;img src="plots/type1_05.png" width="550" height="500" style="display: block; margin: auto;" /&gt;
-
-
----
-
-# Results: Relative Power
-
-
-&lt;img src="plots/power_05_scatter.png" width="400" height="500" style="display: block; margin: auto;" /&gt;
-
+- CWB maintained Type 1 error rates adequately and provided more power than HTZ
 
 
 ---
@@ -208,29 +143,106 @@ To what extent does CWB improve upon the current standard test, the HTZ test, in
 
 - Use CWB - balances Type 1 error rates and also provides more power than existing corrections
 
-You can find our preprint [here](https://osf.io/preprints/metaarxiv/x6uhk/)
+---
+
+# wildmeta
+
+- The main function in the package is `Wald_test_cwb()`
+
+- Works with meta-regressions models fit using `robumeta::robu()` and `metafor::rma.mv()`
+
+
+```r
+Wald_test_cwb(
+  full_model,
+  constraints,
+  R,
+  cluster = NULL,
+  auxiliary_dist = "Rademacher",
+  adjust = "CR0",
+  type = "CR0",
+  test = "Naive-F",
+  seed = NULL
+)
+```
+
 
 
 ---
 
-# R Package
+# robumeta
 
-&lt;img src="wildmeta_hex.png" width="650" height="500" style="display: block; margin: auto;" /&gt;
-[https://meghapsimatrix.github.io/wildmeta/](https://meghapsimatrix.github.io/wildmeta/)
+
+```r
+library(wildmeta)
+library(clubSandwich)
+library(robumeta)
+
+robu_model &lt;- robu(d ~ 0 + study_type + hrs + test,
+                   studynum = study,
+                   var.eff.size = V,
+                   small = FALSE,
+                   data = SATcoaching)
+
+robu_res &lt;- Wald_test_cwb(full_model = robu_model,
+                          constraints = constrain_equal(1:3),
+                          R = 999,
+                          seed = 20220209)
+
+robu_res
+```
+
+
+```
+##   Test Adjustment CR_type Statistic   R     p_val
+## 1  CWB        CR0     CR0   Naive-F 999 0.3343343
+```
 
 
 ---
 
+# metafor
 
+
+```r
+library(metafor)
+
+rma_model &lt;- rma.mv(yi = d ~ 0 + study_type + hrs + test,
+                    V = V,
+                    random = ~ study_type | study,
+                    data = SATcoaching)
+
+rma_res &lt;- Wald_test_cwb(full_model = rma_model,
+                         constraints = constrain_equal(1:3),
+                         R = 999,
+                         seed = 20210314)
+
+rma_res
+```
+
+
+```
+##   Test Adjustment CR_type Statistic   R    p_val
+## 1  CWB        CR0     CR0   Naive-F 999 0.242485
+```
+
+---
+
+# Bootstrap Distribution Plot
+
+
+```r
+plot(rma_res, 
+     fill = "darkred", 
+     alpha = 0.5)
+```
+
+![](wildmeta_pres_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+---
 class: inverse, middle, center, cobBack
 
 # THANK YOU!
-
----
-
-class: inverse, middle, center, cobBack
-
-# Questions?
 
 ---
 
