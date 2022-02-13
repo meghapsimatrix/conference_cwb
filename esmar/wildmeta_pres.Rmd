@@ -48,6 +48,12 @@ knitr::include_graphics("wildmeta_hex.png")
 
 
 - However, common for each primary study to yield more than one effect size or studies to be nested in some way creating dependence 
+
+- Example: Tanner-Smith and Lipsey (2015) meta-analysis of the effects of brief alcohol interventions
+  - 185 studies, 1446 effect sizes
+  - Multiple correlated outcome measures: e.g., alcohol consumption measured by frequency of consumption, quantity consumed, blood alcohol concentration
+  - Repeated measures
+  - Multiple comparison groups
   
 ---
 
@@ -78,21 +84,9 @@ knitr::include_graphics("wildmeta_hex.png")
   
   - Small number of studies - CRVE - Type 1 error inflation - meta-analysts can conclude some effect is present when it is actually not
   
----
-
-# Small Sample Corrections
-
-- Tipton (2015) for tests of single coefficients (e.g., if treatment effect differs based on the average age of the samples)
-
-- Tipton and Pustejovsky (2015) for multiple-contrast hypothesis tests (e.g., whether treatment effect differ for )
-
-- Both recommended a method - HTZ test (`clubSandwich`)
-  - CR2 correction method and using the Satterthwaite degrees of freedom for single coefficient tests
-  - Extension of CR2 + Satterthwaite for multiple-contrast hypothesis tests
-
-- HTZ controls Type 1 error rates adequately 
-
-- But, really low Type 1 error rates especially for __multiple-contrast hypothesis tests__ (Tipton and Pustejovsky, 2015)
+ - Tipton (2015) and Tipton and Pustejovsky (2015) examined small sample corrections - HTZ test - CR2 + Satterthwaite for single-coefficient tests and multiple-contrast hypothesis tests
+  
+- HTZ controls Type 1 error rates adequately but possibly low power especially for __multiple-contrast hypothesis tests__ (Tipton and Pustejovsky, 2015)
   
 
 
@@ -139,17 +133,15 @@ $$p = \frac{1}{R} \sum_{r = 1}^R I\left(F^{(r)} > F\right)$$
 
 ---
 
-# Conclusion
+# Recommendations
 
-- Dependent effect sizes - common
+- Dependent effect sizes - common in meta-analyses in social sciences
 
-- Ignore them - incorrect standard errors and inferences
+- If we use RVE for meta-analyses with small number of studies - Type 1 error inflation - false discovery rate high
 
-- Use RVE - Type 1 error inflation - false discovery rate high
+- If we use the HTZ test - low power -  may miss effects that are present
 
-- Use small sample correction HTZ test - may miss effects that are present
-
-- Use CWB - balances Type 1 error rates and also provides more power than existing corrections
+- We recommend use of CWB - balances Type 1 error rates and also provides more power than existing corrections
 
 ---
 
@@ -177,9 +169,21 @@ Wald_test_cwb(
 
 ---
 
-# robumeta
+# Data `SATcoaching`
 
-```{r, message = F, warning = F, eval = F}
+```{r, warning = F, message = F, echo = F}
+library(clubSandwich)
+library(DT)
+
+DT::datatable(SATcoaching %>% select(study, d, V, study_type, hrs, test))
+```
+
+
+---
+
+# robumeta Model
+
+```{r, warning= FALSE, message = F}
 library(wildmeta)
 library(clubSandwich)
 library(robumeta)
@@ -190,6 +194,21 @@ robu_model <- robu(d ~ 0 + study_type + hrs + test,
                    small = FALSE,
                    data = SATcoaching)
 
+
+```
+
+---
+
+```{r}
+robu_model
+```
+
+
+---
+
+# robumeta
+
+```{r, message = F, warning = F, eval = F}
 robu_res <- Wald_test_cwb(full_model = robu_model,
                           constraints = constrain_equal(1:3),
                           R = 999,
