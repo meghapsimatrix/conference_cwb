@@ -335,6 +335,8 @@ robu_tsl
 
 ---
 
+# Wald_test_cwb()
+
 ```{r, message = F, warning = F, eval = F}
 robu_res <- Wald_test_cwb(robu_comp_tsl, 
                           constraints = constrain_zero(3:7),
