@@ -1,0 +1,41 @@
+---
+title: "Exercises for Dependent Effect Sizes"
+author: "Megha Joshi"
+date: "4/12/2022"
+output: 
+  pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data
+
+Below I am loading the Tanner-Smith and Lipsey (2015) data that I went over in the presentation. 
+
+```{r, warning = F, message = F}
+library(tidyverse)
+
+load("tsl_dat_20.RData")
+
+glimpse(tsl_dat)
+```
+
+# Questions
+
+1. Calculate the number of studies and calculate the number of effect sizes within each study?
+
+2. What is dependence? How can it occur in a meta-analytic dataset?
+
+3. Calculate the average effect of brief alcohol intervention not accounting for any moderators using `robu()` from `robumeta`. 
+
+4. Run a meta-regression model with just `dv` (dependent variable measure) as a moderator. Estimate the effect of dependent variable of effect of brief alcohol interventions.
+
+5. In the prior analyses, what kind of test and corrections does `robumeta` implement by default? What would be the consequence if we ignored the dependent structure of the meta-analytic data?
+
+6. Using the meta-regression model you estimated in question 4, run a multiple-contrast hypothesis test to examine if effects differ according different dependent variable measures using the `Wald_test()` function from `clubSandwich` package. Use CR2 correction and HTZ test. 
+
+7. According to the results of my simulation studies, what could potentially be the problem in the result of the multiple-contrast test you just conducted? Why would practitioners and policy-makers care about this problem?
+
+8. Run multiple-contrast hypothesis test using `Wald_test_cwb()` from `wildmeta`. Compare the p-values that you calculated from from `wildmeta` and `clubSandwich`.
