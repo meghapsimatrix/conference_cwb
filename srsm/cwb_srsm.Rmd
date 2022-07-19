@@ -2,7 +2,7 @@
 title: "Cluster Wild Bootstrapping to Handle Dependent Effect Sizes"
 subtitle: "SRSM 2022"
 author: "Megha Joshi"
-date: "`r Sys.Date()`"
+date: "07/20/2022"
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
@@ -130,24 +130,57 @@ $$p = \frac{1}{R} \sum_{r = 1}^R I\left(F^{(r)} > F\right)$$
 
 To what extent does CWB improve upon the current standard test, the HTZ test, in terms of Type I error rates and power? 
 
-![](https://media1.tenor.com/images/4e6f164ade4d978ce7a39c502d63dbab/tenor.gif?itemid=10627051)
 
 ---
 
-# Simulation
+class: inverse, middle, center, cobBack
 
-- Ran two simulations - presenting on Study 1
+# Simulation Study Methods
 
-- Compared CWB against the HTZ test in terms of Type 1 error rates and power
+---
 
-- Results
-  - CWB maintained Type 1 error rates adequately 
-  - And, provided huge gains in power over the standard method, the HTZ test
+# Data Generation
+
+- Standardized mean differences
+
+- Correlated effects meta-analytic data
+
+- __Study 1__ covariates (will focus on this one)
+  - Design matrix from Tipton and Pustejovsky (2015) 
+  - Imbalanced, non-normal  covariates
+
+- __Study 2__ covariates 
+  - One covariate with 3 to 5 balanced categories 
   
 ---
 
+# Estimation Methods 
 
-# Results: Type I Error
+- Meta-regression - correlated effects working model
+
+- Tests:
+  - Single coefficient tests
+  - Multiple-contrast hypothesis tests
+
+- Estimation methods:
+  - HTZ test 
+  - CWB test
+  - CWB Adjusted test
+  
+- Number of bootstraps set to 399
+
+
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Results Study 1
+
+---
+
+
+# Type I Error
 
 
 ```{r echo = FALSE, out.height = 500, out.width = 550, fig.align = "center"}
@@ -157,7 +190,7 @@ knitr::include_graphics("plots/type1_05.png")
 
 ---
 
-# Results: Relative Power
+# Relative Power
 
 
 ```{r echo = FALSE, out.height = 500, out.width = 400, fig.align = "center"}

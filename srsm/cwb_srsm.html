@@ -4,7 +4,7 @@
     <title>Cluster Wild Bootstrapping to Handle Dependent Effect Sizes</title>
     <meta charset="utf-8" />
     <meta name="author" content="Megha Joshi" />
-    <meta name="date" content="2022-07-15" />
+    <meta name="date" content="2022-07-20" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -15,7 +15,7 @@ class: center, middle, inverse, title-slide
 # Cluster Wild Bootstrapping to Handle Dependent Effect Sizes
 ## SRSM 2022
 ### Megha Joshi
-### 2022-07-15
+### 07/20/2022
 
 ---
 
@@ -124,24 +124,57 @@ class: center, middle, inverse, title-slide
 
 To what extent does CWB improve upon the current standard test, the HTZ test, in terms of Type I error rates and power? 
 
-![](https://media1.tenor.com/images/4e6f164ade4d978ce7a39c502d63dbab/tenor.gif?itemid=10627051)
 
 ---
 
-# Simulation
+class: inverse, middle, center, cobBack
 
-- Ran two simulations - presenting on Study 1
+# Simulation Study Methods
 
-- Compared CWB against the HTZ test in terms of Type 1 error rates and power
+---
 
-- Results
-  - CWB maintained Type 1 error rates adequately 
-  - And, provided huge gains in power over the standard method, the HTZ test
+# Data Generation
+
+- Standardized mean differences
+
+- Correlated effects meta-analytic data
+
+- __Study 1__ covariates (will focus on this one)
+  - Design matrix from Tipton and Pustejovsky (2015) 
+  - Imbalanced, non-normal  covariates
+
+- __Study 2__ covariates 
+  - One covariate with 3 to 5 balanced categories 
   
 ---
 
+# Estimation Methods 
 
-# Results: Type I Error
+- Meta-regression - correlated effects working model
+
+- Tests:
+  - Single coefficient tests
+  - Multiple-contrast hypothesis tests
+
+- Estimation methods:
+  - HTZ test 
+  - CWB test
+  - CWB Adjusted test
+  
+- Number of bootstraps set to 399
+
+
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Results Study 1
+
+---
+
+
+# Type I Error
 
 
 &lt;img src="plots/type1_05.png" width="550" height="500" style="display: block; margin: auto;" /&gt;
@@ -149,7 +182,7 @@ To what extent does CWB improve upon the current standard test, the HTZ test, in
 
 ---
 
-# Results: Relative Power
+# Relative Power
 
 
 &lt;img src="plots/power_05_scatter.png" width="400" height="500" style="display: block; margin: auto;" /&gt;
