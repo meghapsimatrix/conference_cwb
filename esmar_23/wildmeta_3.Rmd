@@ -18,6 +18,8 @@ output:
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library(xaringanthemer)
+library(xaringanExtra)
+
 style_mono_accent(
   base_color = "#311432",
   header_font_google = google_font("Josefin Sans"),
@@ -44,7 +46,8 @@ knitr::include_graphics("wildmeta_hex.png")
 # Cluster Wild Bootstrapping (CWB)
 
 - Dependent effect sizes common in meta-analyses
-  - Multiple correlated outcome measures, repeated measures, multiple comparison groups
+  - Multiple correlated outcome measures, repeated measures, multiple comparison group
+  - Studies nested in some way   
   
 - Ignore dependence 
   - Incorrect standard errors, incorrect inference from hypothesis tests
@@ -76,54 +79,74 @@ Wald_test_cwb(
 )
 ```
 
+---
+
+class: inverse, middle, center, cobBack
+
+# Example
 
 
 ---
 
-# Data `SATcoaching`
+# Tanner-Smith and Lipsey (2015)
+
+- Tanner-Smith and Lipsey (2015) meta-analysis of the effects of brief alcohol interventions on alcohol consumption and behavior
+
+  - 185 studies, 1446 effect sizes
+    - Studies had multiple effect sizes
+  - Multiple correlated outcome measures: e.g., alcohol consumption measured by frequency of consumption, quantity consumed, blood alcohol concentration
+  - Repeated measures
+  - Multiple comparison groups
+  
+- Example RQ:  Do effects of brief alcohol interventions differ across different outcome measurements?
+  
+---
+
+# Data
+
 
 ```{r, warning = F, message = F, echo = F}
-library(clubSandwich)
 library(DT)
+library(tidyverse)
 
-DT::datatable(SATcoaching %>% select(study, d, V, study_type, hrs, test))
+load("tsl_dat_20.RData")
+
+tsl_dat <- 
+  tsl_dat %>%
+  mutate(dv = case_when(dv == "bac" ~ "Blood alcohol concentration",
+                        dv == "comb" ~ "Combined measures (e.g., AUDIT)",
+                        dv == "fhu" ~ "Frequency of heavy use",
+                        dv == "fu" ~ "Frequency of use",
+                        dv == "pc" ~ "Peak consumption",
+                        dv == "qu" ~ "Quantity of use"))
+
+DT::datatable(tsl_dat %>%
+                mutate_if(is.numeric, round, 3))
 ```
-
 
 ---
 
 # robumeta Model
 
-```{r, warning= FALSE, message = F}
+```{r, warning = FALSE, message = FALSE}
 library(wildmeta)
 library(clubSandwich)
 library(robumeta)
 
-robu_model <- robu(d ~ 0 + study_type + hrs + test,
-                   studynum = study,
-                   var.eff.size = V,
-                   small = FALSE,
-                   data = SATcoaching)
-
-
+robu_tsl <- robu(delta ~ g2age + dv, 
+                 studynum = study, 
+                 var.eff.size = v,
+                 small = TRUE,
+                 data = tsl_dat)
 ```
 
----
-
-```{r}
-robu_model
-```
-
-
----
-
-# robumeta
+# Wald_test_cwb()
 
 ```{r, message = F, warning = F, eval = F}
-robu_res <- Wald_test_cwb(full_model = robu_model,
-                          constraints = constrain_equal(1:3),
+robu_res <- Wald_test_cwb(robu_comp_tsl, 
+                          constraints = constrain_zero(3:7),
                           R = 999,
-                          seed = 20220209)
+                          seed = 20200218)
 
 robu_res
 ```
@@ -134,78 +157,4 @@ load("robu_res.RData")
 robu_res
 ```
 
-
 ---
-
-# metafor
-
-```{r, warning=F, message=F, eval = F}
-library(metafor)
-
-rma_model <- rma.mv(yi = d ~ 0 + study_type + hrs + test,
-                    V = V,
-                    random = ~ study_type | study,
-                    data = SATcoaching)
-
-rma_res <- Wald_test_cwb(full_model = rma_model,
-                         constraints = constrain_equal(1:3),
-                         R = 999,
-                         seed = 20210314)
-
-rma_res
-```
-
-```{r, echo = F}
-#save(rma_res, file = "rma_res.RData")
-load("rma_res.RData")
-rma_res
-```
-
----
-
-# Bootstrap Distribution Plot
-
-```{r, warning = F, message=F, fig.width = 7, fig.height = 3.5, dpi = 500}
-plot(rma_res, 
-     fill = "darkred", 
-     alpha = 0.5)
-```
-
----
-class: inverse, middle, center, cobBack
-
-# THANK YOU!
-
----
-
-class: inverse
-
-# References
-
-Boos, D. D., & others. (2003). Introduction to the bootstrap world. Statistical Science, 18(2), 168–174. 
-
-Cameron, A. C., Gelbach, J. B., & Miller, D. L. (2008). Bootstrap-Based Improvements for Inference with Clustered Errors. The Review of Economics and Statistics, 47.
-
-Garrett, R., Citkowicz, M., & Williams, R. (2019). How responsive is a teacher’s classroom practice to intervention? A meta-analysis of randomized field studies. Review of research in education, 43(1), 106-137.
-
-Hedges, L. V., Tipton, E., & Johnson, M. C. (2010). Robust variance estimation in meta-regression with dependent effect size estimates. Research Synthesis Methods, 1(1), 39–65.
-
----
-
-class: inverse
-
-# References
-
-Joshi, M., Pustejovsky, J. E., & Beretvas, S. N. (2022). Cluster wild bootstrapping to handle dependent effect sizes in meta-analysis with small number of studies. Research Synthesis Methods. (Accepted).
-
-Tipton, E., & Pustejovsky, J. E. (2015). Small-Sample Adjustments for Tests of Moderators and Model Fit Using Robust Variance Estimation in Meta-Regression. Journal of Educational and Behavioral Statistics, 40 (6), 604–634. 
-
-Tipton, E. (2015). Small sample adjustments for robust variance estimation with meta-regression. Psychological Methods, 20(3), 375–393. 
-
-
-
-
-
-
-
-
