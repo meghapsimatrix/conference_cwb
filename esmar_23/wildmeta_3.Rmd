@@ -143,10 +143,10 @@ robu_tsl <- robu(delta ~ g2age + dv,
 # Wald_test_cwb()
 
 ```{r, message = F, warning = F, eval = F}
-robu_res <- Wald_test_cwb(robu_comp_tsl, 
+robu_res <- Wald_test_cwb(robu_tsl, 
                           constraints = constrain_zero(3:7),
                           R = 999,
-                          seed = 20200218)
+                          seed = 20230123)
 
 robu_res
 ```
@@ -157,4 +157,34 @@ load("robu_res.RData")
 robu_res
 ```
 
+---
+
+# Parallel Processing
+
+```{r}
+library(future)
+
+if (parallelly::supportsMulticore()) {
+  plan(multicore) 
+} else {
+  plan(multisession)
+}
+
+nbrOfWorkers()
+
+system.time(
+  res <- Wald_test_cwb(full_model = robu_tsl,
+                       constraints = constrain_equal(1:3),
+                       R = 1999, 
+                       seed = 20230124)
+)
+
+```
+
+
+```{r, echo = F}
+save(res, file = "robu_res_p.RData")
+load("robu_res_p.RData")
+res
+```
 ---
