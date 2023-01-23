@@ -1,0 +1,302 @@
+---
+title: "wildmeta: Cluster Wild Bootstrapping for Meta-Analysis"
+subtitle: "ESMAR 2022"
+author: "Megha Joshi & James E. Pustejovsky"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    includes:
+      after_body: insert_logo.html
+---
+
+
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#311432",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
+)
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(wildmeta)
+```
+
+
+# wildmeta
+
+
+```{r echo = FALSE, out.height = 500, out.width = 650, fig.align = "center"}
+knitr::include_graphics("wildmeta_hex.png")
+```
+
+
+
+---
+
+# Dependence in Meta-Analysis
+
+- Typical meta-analytic techniques (like meta-regression) involves the assumption that effect sizes are independent 
+
+
+- However, common for each primary study to yield more than one effect size or studies to be nested in some way creating dependence 
+
+- Example: Tanner-Smith and Lipsey (2015) meta-analysis of the effects of brief alcohol interventions
+  - 185 studies, 1446 effect sizes
+  - Multiple correlated outcome measures: e.g., alcohol consumption measured by frequency of consumption, quantity consumed, blood alcohol concentration
+  - Repeated measures
+  - Multiple comparison groups
+  
+---
+
+# Handling Dependence
+
+- Ignore dependence 
+  - Incorrect standard errors, incorrect inference from hypothesis tests
+  
+- Ad-hoc methods 
+  - Selecting one effect per study 
+  - Analysing subsets of data separately 
+  - Loss of information
+
+- Standard multivariate methods - ideal 
+  - Require info on covariance between effect sizes 
+  - Primary studies often don't report 
+
+
+---
+
+# Robust Variance Estimation
+
+- Robust variance estimation (CR0-type CRVE) (Hedges, Tipton, and Johnson, 2010)
+
+  - Only works well when number of studies is large (> 40, Hedges Tipton, Johnson, 2010)
+  
+  - Meta-analysis in social science research typically have smaller number of studies
+  
+  - Small number of studies - CRVE - Type 1 error inflation - meta-analysts can conclude some effect is present when it is actually not
+  
+ - Tipton (2015) and Tipton and Pustejovsky (2015) examined small sample corrections - HTZ test - CR2 + Satterthwaite for single-coefficient tests and multiple-contrast hypothesis tests
+  
+- HTZ controls Type 1 error rates adequately but possibly low power especially for __multiple-contrast hypothesis tests__ (Tipton and Pustejovsky, 2015)
+  
+
+
+---
+
+# Cluster Wild Bootstrapping (CWB)
+
+- Alternative method - examined in the econometrics literature - not in meta-analytic framework
+
+- Bootstrapping - estimate unknown quantities by re-sampling from original data many times (Boos et al., 2013)
+  
+- CWB - re-sampling residuals by multiplying them by cluster-level random weights (Cameron, Gelbach, and Miller 2008)
+
+---
+
+# CWB Algorithm
+
+1. Fit a null model and a full model on the original data
+
+2. Obtain residuals from the null model 
+
+3. Generate an auxiliary random variable that has mean of 0 and variance of 1 and multiply the residuals by the random variable (e.g., Rademacher weights) set to be constant within clusters (CWB)
+  - Can also multiply the residuals by CR2 matrices before multiplying by weights (CWB Adjusted)
+
+4.  Obtain new outcome scores by adding the transformed residuals to the predicted values from the null model fit on the original data
+
+5.  Re-estimate the full model with the new calculated outcome scores and obtain the test statistic
+
+6. Repeat steps 3-5 $R$ times. Calculate p-value:
+
+$$p = \frac{1}{R} \sum_{r = 1}^R I\left(F^{(r)} > F\right)$$
+
+
+---
+
+# Simulation
+
+- Ran two simulations 
+
+- Compared CWB against the HTZ test in terms of Type 1 error rates and power
+
+- CWB maintained Type 1 error rates adequately and provided more power than HTZ
+
+
+---
+
+# Recommendations
+
+- Dependent effect sizes - common in meta-analyses in social sciences
+
+- If we use RVE for meta-analyses with small number of studies - Type 1 error inflation - false discovery rate high
+
+- If we use the HTZ test - low power -  may miss effects that are present
+
+- We recommend use of CWB - balances Type 1 error rates and also provides more power than existing corrections
+
+---
+
+# wildmeta
+
+- The main function in the package is `Wald_test_cwb()`
+
+- Works with meta-regressions models fit using `robumeta::robu()` and `metafor::rma.mv()`
+
+```{r, eval = F}
+Wald_test_cwb(
+  full_model,
+  constraints,
+  R,
+  cluster = NULL,
+  auxiliary_dist = "Rademacher",
+  adjust = "CR0",
+  type = "CR0",
+  test = "Naive-F",
+  seed = NULL
+)
+```
+
+
+
+---
+
+# Data `SATcoaching`
+
+```{r, warning = F, message = F, echo = F}
+library(clubSandwich)
+library(DT)
+
+DT::datatable(SATcoaching %>% select(study, d, V, study_type, hrs, test))
+```
+
+
+---
+
+# robumeta Model
+
+```{r, warning= FALSE, message = F}
+library(wildmeta)
+library(clubSandwich)
+library(robumeta)
+
+robu_model <- robu(d ~ 0 + study_type + hrs + test,
+                   studynum = study,
+                   var.eff.size = V,
+                   small = FALSE,
+                   data = SATcoaching)
+
+
+```
+
+---
+
+```{r}
+robu_model
+```
+
+
+---
+
+# robumeta
+
+```{r, message = F, warning = F, eval = F}
+robu_res <- Wald_test_cwb(full_model = robu_model,
+                          constraints = constrain_equal(1:3),
+                          R = 999,
+                          seed = 20220209)
+
+robu_res
+```
+
+```{r, echo = F}
+#save(robu_res, file = "robu_res.RData")
+load("robu_res.RData")
+robu_res
+```
+
+
+---
+
+# metafor
+
+```{r, warning=F, message=F, eval = F}
+library(metafor)
+
+rma_model <- rma.mv(yi = d ~ 0 + study_type + hrs + test,
+                    V = V,
+                    random = ~ study_type | study,
+                    data = SATcoaching)
+
+rma_res <- Wald_test_cwb(full_model = rma_model,
+                         constraints = constrain_equal(1:3),
+                         R = 999,
+                         seed = 20210314)
+
+rma_res
+```
+
+```{r, echo = F}
+#save(rma_res, file = "rma_res.RData")
+load("rma_res.RData")
+rma_res
+```
+
+---
+
+# Bootstrap Distribution Plot
+
+```{r, warning = F, message=F, fig.width = 7, fig.height = 3.5, dpi = 500}
+plot(rma_res, 
+     fill = "darkred", 
+     alpha = 0.5)
+```
+
+---
+class: inverse, middle, center, cobBack
+
+# THANK YOU!
+
+---
+
+class: inverse
+
+# References
+
+Boos, D. D., & others. (2003). Introduction to the bootstrap world. Statistical Science, 18(2), 168–174. 
+
+Cameron, A. C., Gelbach, J. B., & Miller, D. L. (2008). Bootstrap-Based Improvements for Inference with Clustered Errors. The Review of Economics and Statistics, 47.
+
+Garrett, R., Citkowicz, M., & Williams, R. (2019). How responsive is a teacher’s classroom practice to intervention? A meta-analysis of randomized field studies. Review of research in education, 43(1), 106-137.
+
+Hedges, L. V., Tipton, E., & Johnson, M. C. (2010). Robust variance estimation in meta-regression with dependent effect size estimates. Research Synthesis Methods, 1(1), 39–65.
+
+---
+
+class: inverse
+
+# References
+
+Joshi, M., Pustejovsky, J. E., & Beretvas, S. N. (2022). Cluster wild bootstrapping to handle dependent effect sizes in meta-analysis with small number of studies. Research Synthesis Methods. (Accepted).
+
+Tipton, E., & Pustejovsky, J. E. (2015). Small-Sample Adjustments for Tests of Moderators and Model Fit Using Robust Variance Estimation in Meta-Regression. Journal of Educational and Behavioral Statistics, 40 (6), 604–634. 
+
+Tipton, E. (2015). Small sample adjustments for robust variance estimation with meta-regression. Psychological Methods, 20(3), 375–393. 
+
+
+
+
+
+
+
+
