@@ -184,9 +184,11 @@ metafor_res
 ```
 ---
 
-# Parallel Processing `robumeta`
+# `robumeta` Parallel
 
 ```{r, message = F, warning = F}
+library(future)
+
 if (parallelly::supportsMulticore()) {
   plan(multicore) 
 } else {
@@ -205,7 +207,7 @@ system.time(
 ```
 
 ---
-# Parallel Processing `robumeta`
+# `robumeta` Parallel
 
 ```{r}
 robu_res_p
@@ -213,7 +215,7 @@ robu_res_p
 
 ---
 
-# Parallel Processing `metafor`
+# `metafor` Parallel
 
 What is happening here JAMES?
 
