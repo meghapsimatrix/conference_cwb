@@ -40,8 +40,6 @@ library(clubSandwich)
 # Cluster Wild Bootstrapping (CWB)
 
 - Dependent effect sizes common in meta-analyses
-  - Multiple correlated outcome measures, repeated measures, multiple comparison group
-  - Studies nested in some way   
   
 - Ignore dependence 
   - Incorrect standard errors, incorrect inference from hypothesis tests
