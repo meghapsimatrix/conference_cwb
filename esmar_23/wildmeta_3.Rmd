@@ -87,8 +87,7 @@ class: inverse, middle, center, cobBack, hide-logo
   - 185 studies, 1446 effect sizes
     - Studies had multiple effect sizes
   - Multiple correlated outcome measures: e.g., alcohol consumption measured by frequency of consumption, quantity consumed, blood alcohol concentration
-  - Repeated measures
-  - Multiple comparison groups
+
   
 - Example RQ:  Do effects of brief alcohol interventions differ across different outcome measurements?
   
@@ -247,8 +246,10 @@ class: middle, center, cobBack, hide-logo
 # Links
 
 wildmeta: [https://meghapsimatrix.github.io/wildmeta/index.html](https://meghapsimatrix.github.io/wildmeta/index.html) 
-My webstite: [https://meghapsimatrix.github.io/wildmeta/index.html](https://meghapsimatrix.com)
 
+My website: [https://meghapsimatrix.github.io/wildmeta/index.html](https://meghapsimatrix.com)
+
+This presentation: [https://github.com/meghapsimatrix/conference_cwb/tree/main/esmar_23](https://github.com/meghapsimatrix/conference_cwb/tree/main/esmar_23)
 ---
 
 class: hide-logo
