@@ -36,7 +36,7 @@ library(clubSandwich)
 ```
 
 
-# Dependence in Meta-Analysis
+# Dependence 
 
 - Typical meta-analytic techniques (like meta-regression) involves the assumption that effect sizes are independent 
 
