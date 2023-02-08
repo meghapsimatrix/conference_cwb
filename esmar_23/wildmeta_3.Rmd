@@ -68,7 +68,7 @@ DT::datatable(SATcoaching %>% select(study, d, V, test, hrs))
 - Robust variance estimation (RVE) with small sample correction recommended (Tipton, 2015; Tipton and Pustejovsky, 2015)
   
 - Such correction controls Type 1 error rates adequately but low power especially for __multiple-contrast hypothesis tests__ (Joshi, Pustejovsky and Beretvas, 2022; Tipton and Pustejovsky, 2015)
-  - Examples of multiple contrast hypothesis test: To what extent do the effects of SAT coaching vary across math and verbal sections of the test?
+  - Example of multiple contrast hypothesis test: To what extent do the effects of SAT coaching vary across math and verbal sections of the test?
   
 ---
 
@@ -100,6 +100,13 @@ DT::datatable(SATcoaching %>% select(study, d, V, test, hrs))
 6. Repeat steps 3-5 $R$ times. Calculate p-value:
 
 $$p = \frac{1}{R} \sum_{r = 1}^R I\left(F^{(r)} > F\right)$$
+---
+
+class: hide-logo
+
+```{r echo = FALSE, out.height = 500, out.width = 650, fig.align = "center"}
+knitr::include_graphics("wildmeta_hex.png")
+```
 
 
 ---
@@ -264,13 +271,6 @@ wildmeta: [https://meghapsimatrix.github.io/wildmeta/index.html](https://meghaps
 My website: [https://meghapsimatrix.com](https://meghapsimatrix.com)
 
 
----
-
-class: hide-logo
-
-```{r echo = FALSE, out.height = 500, out.width = 650, fig.align = "center"}
-knitr::include_graphics("wildmeta_hex.png")
-```
 
 
 ---
