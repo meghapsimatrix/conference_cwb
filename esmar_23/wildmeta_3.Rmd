@@ -40,8 +40,11 @@ library(clubSandwich)
 
 - Typical meta-analytic techniques (like meta-regression) involves the assumption that effect sizes are independent 
 
+--
 
 - However, common for each primary study to yield more than one effect size or studies to be nested in some way creating dependence 
+
+--
 
 - Example: Kalaian and Raudenbush (1996) data from `clubSandwich` with effects of SAT (US standardized test for college admissions) coaching 
   - 47 studies, 67 effect sizes
@@ -65,7 +68,11 @@ DT::datatable(SATcoaching %>% select(study, d, V, test, hrs))
 
 - Ignoring dependence leads to incorrect standard errors, incorrect inference from hypothesis tests
 
+--
+
 - Robust variance estimation (RVE) with small sample correction recommended (Tipton, 2015; Tipton and Pustejovsky, 2015)
+
+--
   
 - Such correction controls Type 1 error rates adequately but low power especially for __multiple-contrast hypothesis tests__ (Joshi, Pustejovsky and Beretvas, 2022; Tipton and Pustejovsky, 2015)
   - Example of multiple contrast hypothesis test: To what extent do the effects of SAT coaching vary across math and verbal sections of the test?
@@ -76,9 +83,15 @@ DT::datatable(SATcoaching %>% select(study, d, V, test, hrs))
 
 - We examined an alternative method cluster wild bootstrapping (CWB) (Joshi, Pustejovsky and Beretvas, 2022)
 
+--
+
 - Bootstrapping involves estimating unknown quantities by re-sampling from original data many times (Boos et al., 2013)
+
+--
   
 - CWB involves re-sampling residuals by multiplying them by random cluster-level weights (Cameron, Gelbach, and Miller 2008)
+
+--
 
 - CWB maintains adequate Type 1 error rates and has more power than RVE small-sample correction (Joshi, Pustejovsky and Beretvas, 2022)
 
@@ -88,14 +101,23 @@ DT::datatable(SATcoaching %>% select(study, d, V, test, hrs))
 
 1. Fit a null model and a full model on the original data
 
+--
+
 2. Obtain residuals from the null model 
 
+--
+
 3. Generate an auxiliary random variable that has mean of 0 and variance of 1 and multiply the residuals by the random variable (e.g., Rademacher weights) set to be constant within clusters (CWB)
-  - Can also multiply the residuals by CR2 matrices before multiplying by weights (CWB Adjusted)
+  
+--
 
 4.  Obtain new outcome scores by adding the transformed residuals to the predicted values from the null model fit on the original data
 
+--
+
 5.  Re-estimate the full model with the new calculated outcome scores and obtain the test statistic
+
+--
 
 6. Repeat steps 3-5 $R$ times. Calculate p-value:
 
@@ -254,9 +276,15 @@ robu_res_para
 
 - Higher number of bootstraps better ~ precision, power
 
+--
+
 - Computationally intensive
 
+--
+
 - 1,999 or higher
+
+--
 
 - See [Davidson & MacKinnon (2000)](https://www.econstor.eu/bitstream/10419/67820/1/587473266.pdf) for guidance on number of bootstraps
 
