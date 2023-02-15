@@ -1,5 +1,5 @@
 ---
-title: "wildmeta  0.3.0: Cluster Wild Bootstrapping for Meta-Analysis"
+title: "wildmeta: Cluster Wild Bootstrapping for Meta-Analysis"
 subtitle: "ESMAR 2023"
 author: "Megha Joshi, James E. Pustejovsky & Pierce Cappelli"
 date: "`r Sys.Date()`"
