@@ -1,0 +1,121 @@
+---
+title: "Clustered Bootstrapping"
+author: "Megha Joshi, James E. Pustejovsky, Martyna Citkowicz"
+format: pptx
+reference-doc: reference.pptx
+editor: visual
+---
+
+## Selective reporting of study results
+
+-   **Selective reporting** occurs if *affirmative* findings are **more likely to be reported** and available for inclusion in meta-analysis.
+
+    -   *Affirmative* meaning **statistically significant** and **in the theoretically expected direction**.
+
+    -   Bias in the publication process (journal/editor/reviewer incentives)
+
+    -   Strategic decision by authors
+
+## Selective reporting consequences
+
+-   Selective reporting **distorts the evidence base** available for systematic review/meta-analysis.
+
+    -   Inflates average effect size estimates from meta-analysis.
+
+    -   Biases estimates of heterogeneity (Augusteijn et al., 2019)
+
+## Tools for investigating Selective Reporting
+
+-   Graphical representations - funnel plots, contour-enhanced funnel plots
+
+-   Tests/ adjustments for funnel plot asymmetry - trim-and -fill, Egger's regression, PET/PEESE
+
+-   Selection models - weight function models, sensitivity analyses
+
+-   p_value diagnostics - p-curve, p-uniform
+
+## Selection models
+
+-   Two parts
+
+    -   Model describing the evidence generation process
+
+        -   Random effects meta-regression
+
+    -   Model describing the process by which evidence is reported
+
+        -   Step-function - probability that an effect size estimate is observed depends on the range in which its p-values falls
+
+## Dependent Effects
+
+## Motivation
+
+-   Methods to examine and account for selective outcome reporting bias, such as selection models, cannot currently account for **effect size dependency**
+
+-   But dependent effect sizes are ubiquitous in education and social science meta-analyses
+
+-   Failing to account for dependency can result in misleading conclusions like inflated Type 1 error rates, and too-narrow confidence intervals
+
+## Our Project
+
+-   Develop and examine better methods for investigating and accounting for selecting reporting in meta-analysis
+
+-   Account for dependent effect sizes
+
+-   Combine selection models with
+
+    -   Cluster bootstrap (preliminary work)
+
+    -   Robust variance estimation (on-going work)
+
+## Motivation to Cluster Bootstrap
+
+-   Bootstrapping involves emulating unknown distributions by re-sampling from original data many times
+
+-   Can resample clusters of dependent effect sizes to address dependence
+
+-   Bootstrapping
+
+    -   Can be implemented with off-the-shelf tools
+
+    -   Bootstrap is closely related to CRVE, so it provides initial evidence of how CRVE inference may perform
+
+## Cluster Bootstrap with Selection Models
+
+-   Estimate a regular one-level three-parameter selection model
+
+-   Use a cluster bootstrap (re-sampling of clusters of dependent effect sizes) to assess uncertainty)
+
+## Data Generation
+
+-   Mostly follows Rodgers & Pustejovsky (2020)
+
+-   Generated summary statistics for correlated outcomes for two-group comparison designs (equal sample size)
+
+-   Generated meta-analytic dataset with sample size and number of effect sizes sampled from distributions found in WWC studies database
+
+-   Censored one-sided p-values \> 0.025 with specified probability of selection
+
+-   Continued sampling until dataset included effect sizes from $m$ studies
+
+## Estimation
+
+-   Cluster bootstrap selection model ($R = 399$ )
+
+    -   Run meta-regression using `metafor::rma.uni()`
+
+    -   Fit selection model using `metafor::selmode()`
+
+    -   RE-sample dependent clusters using `boot` package and custom code
+
+    -   Fit selection model on the re-sampled data
+
+-   Compare to
+
+    -   Correlated and hierarchical effects model
+
+    -   Fixed effects model with correlated sampling errors but no random effects
+
+    -   PET/ PEESE
+
+## Experimental Design

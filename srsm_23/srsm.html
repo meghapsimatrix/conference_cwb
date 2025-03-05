@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Clustered bootstrapping for selective reporting models in meta-analysis with dependent effects</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Megha Joshi, James E. Pustejovsky &amp; Martyna Citkowicz" />
+    <meta name="date" content="2023-05-09" />
+    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
+    <link href="libs/xaringanExtra-extra-styles-0.2.6/xaringanExtra-extra-styles.css" rel="stylesheet" />
+    <link href="libs/tachyons-4.12.0/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Clustered bootstrapping for selective reporting models in meta-analysis with dependent effects
+]
+.subtitle[
+## SRSM 2023
+]
+.author[
+### Megha Joshi, James E. Pustejovsky &amp; Martyna Citkowicz
+]
+.date[
+### 2023-05-09
+]
+
+---
+
+
+
+
+## Selective reporting of study results
+
+- __Selective reporting__ occurs if _affirmative_ findings are __*more likely to be reported*__ and available for inclusion in meta-analysis.
+
+    - _Affirmative_ meaning __statistically significant__ and __in the theoretically expected direction__. 
+    
+    - Bias in the publication process (journal/editor/reviewer incentives)
+    
+    - Strategic decisions by authors
+
+--
+
+.fl.w-60[
+- Selective reporting __distorts the evidence base__ available for systematic review/meta-analysis.
+
+  - Inflates average effect size estimates from meta-analyses.
+  
+  - Biases estimates of heterogeneity ([Augusteijn et al., 2019](https://doi.org/10.1037/met0000197)).
+]
+
+.fl.w-40[
+&lt;img src="carnival-mirror.jpeg" width="1000" /&gt;
+
+]
+
+---
+
+## Tools for investigating selective reporting
+
+.pull-left[
+
+- Graphical diagnostics
+
+    - Funnel plots
+    - Contour-enhanced funnel plots
+    - Power-enhanced funnel plots (sunset plots)
+
+
+&lt;img src="toolbelt.jpg" width="100%" /&gt;
+
+]
+
+.pull-right[
+    
+- Tests/adjustments for funnel plot asymmetry
+    
+    - Trim-and-fill
+    - Egger's regression
+    - PET/PEESE
+    - Kinked meta-regression
+
+- Selection models
+
+    - Weight-function models
+    - Copas models
+    - Sensitivity analysis
+    
+- p-value diagnostics
+
+    - `\(p\)`-curve
+    - `\(p\)`-uniform / `\(p\text{-uniform}^*\)`
+
+]    
+
+---
+
+
+## Selection models
+
+--
+
+- Model describing the __evidence generation process__
+
+  - Random effects meta-regression
+
+--
+
+- Model describing the __process by which evidence is reported__
+
+  - Vevea-Hedges step-function (Vevea &amp; Hedges, 1995)
+  
+  - Probability that an effect size estimate is observed depends on the range in which its p-values falls 
+        
+        
+        
+---
+
+## Dependent effect size estimates
+
+.pull-left[
+
+__Multiple outcomes measured on a common set of participants__
+&lt;img src="Multiple-outcomes.png" width="100%" /&gt;
+]
+
+.pull-right[
+__Outcomes measured at multiple follow-up times__
+&lt;img src="Multiple-timepoints.png" width="100%" /&gt;
+]
+
+.pull-left[
+
+__Multiple treatment conditions compared to a common control__
+
+&lt;img src="Multiple-treatments.png" width="100%" /&gt;
+
+]
+
+.pull-right[
+
+__Multiple correlations from a common sample__
+
+&lt;img src="Multiple-correlations.png" width="80%" /&gt;
+]
+
+---
+
+## Motivation
+
+--
+
+-   Methods to examine and account for selective outcome reporting bias, such as selection models, __cannot currently account for effect size dependency__
+
+--
+
+-   But dependent effect sizes are __ubiquitous__ in education and social science meta-analyses
+
+--
+
+-   Failing to account for dependency can result in __misleading conclusions__ like inflated Type 1 error rates, and too-narrow confidence intervals
+
+---
+
+## Our Project
+
+--
+-   Develop and examine __better methods__ for investigating and accounting for selective reporting in meta-analysis
+
+--
+
+-   Account for __dependent effect sizes__
+
+--
+
+-   Combine selection models with
+  
+  -   Cluster bootstrap (preliminary work)
+  -   Cluster robust variance estimation (CRVE; on-going work)
+    
+---
+
+## Motivation to Cluster Bootstrap
+
+--
+
+-   Bootstrapping involves emulating unknown distributions by __re-sampling from original__ data many times
+
+--
+
+-   Can __re-sample clusters__ of dependent effect sizes to address dependence
+
+--
+
+-   Bootstrapping
+
+    -   Can be implemented with off-the-shelf tools
+
+    -   Bootstrap is closely related to CRVE, so it provides initial evidence of how CRVE inference may perform
+    
+---
+
+## Cluster Bootstrap with Selection Models
+
+--
+
+-   Estimate a regular one-level three-parameter selection model
+
+--
+
+-   Use a cluster bootstrap (re-sampling of clusters of dependent effect sizes) to assess uncertainty
+
+
+---
+
+class: inverse, middle, center, cobBack
+
+# Simulation Study
+
+---
+
+## Data Generation
+
+--
+
+-   Mostly follows Rodgers &amp; Pustejovsky (2020)
+
+--
+
+-   Generated summary statistics for __correlated outcomes__ for two-group comparison designs (equal sample size)
+
+--
+
+-   Generated meta-analytic dataset with sample size and number of effect sizes sampled from distributions found in WWC studies database
+
+--
+
+-   Censored one-sided p-values \&gt; 0.025 with __specified probability of selection__
+
+--
+
+-   Continued sampling until dataset included effect sizes from `\(m\)` studies
+
+---
+
+## Estimation
+
+--
+
+-   Cluster bootstrap selection model 
+
+    -   Run meta-regression using `metafor::rma.uni()`
+
+    -   Fit selection model using `metafor::selmodel()`
+
+    -   Re-sample dependent clusters using `boot` package and custom code
+
+    -   Fit selection model on the re-sampled data
+
+--
+
+-   Compare cluster bootstrapping to:
+
+    -   Correlated and hierarchical effects model
+
+    -   Fixed effects model with correlated sampling errors but no random effects
+
+    -   PET/ PEESE
+    
+---
+
+# Experimental Design
+
+&lt;table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Conditions &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Values &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Overall average SMD ($\mu$) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0, 0.25, 0.75 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Between-study heterogeneity ($\tau$) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0, 0.3 0.6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Average Correlation between outcomes ($\rho$) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.4, 0.8 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Weights for censoring (probability of selection for non-significant ES &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.2, 0.5, 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Number of studies ($m$) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 30, 60, 90 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+Initial simulations used 500 replications for each simulation condition, with 399 bootstrap for each replication. 
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
